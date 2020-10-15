@@ -13,23 +13,6 @@ import re
 user_score = 0
 global_moves = []
 
-# Asks the user for their name and prints "Hello, {user_name}".
-user_name = input("Enter your name: ")
-print(f"Hello, {user_name}")
-
-
-def scorekeeper_start(user):
-    # Checks to see if the user has an existing record in rating.txt. If they do, user_score is set
-    # to the value of the existing record. Otherwise, it's left at 0.
-    with open("rating.txt", "r") as score_log:
-        for record in score_log:
-            name, score = record.rstrip("\n").split()
-
-            if name == user:
-                global user_score
-                user_score = int(score)
-                return
-
 
 def get_moves(*game_moves):
     # Takes the list of moves the user enabled for the game and puts them in the global_moves list.
@@ -106,7 +89,8 @@ def game_control_loop(valid_moves):
 
         global user_score
 
-        user_choice = input()  # Here, the user will enter either a move, !rating, or !exit.
+        user_choice = input("Type a move to play:\n> ")
+        # Here, the user will enter either a move, !rating. or !exit.
 
         if user_choice == "!exit":
             # If the user enters !exit, the program prints "Bye!" and quits.
@@ -127,14 +111,21 @@ def game_control_loop(valid_moves):
             print("Invalid input")
 
 
-def game_initialization():
-    # Gathers the initial data needed for the game to function.
-    global user_name
-    scorekeeper_start(user_name)
-    # Calls scorekeeper_start() with the user's name as an argument.
-    enabled_moves = input("Enter a comma-separated list of moves to be enabled for this game.\n")
-    # Asks the user what moves they want to be enabled for the game.
-    print("Okay, let's start")
+def info():
+    print("The available moves are:\n")
+    for move in ['water', 'dragon', 'devil', 'gun', 'rock', 'fire', 'scissors',
+                 'snake', 'human', 'tree', 'wolf', 'sponge', 'paper', 'air', 'lightning']:
+        print(f"- {move}")
+
+
+def game_initialization():  # Asks the user what moves they want to be enabled for the game.
+    enabled_moves = input("\nEnter a comma-separated list of moves to be enabled for this game.\n"
+                          "Press Enter/Return without entering anything to default to rock, paper, and scissors.\n"
+                          "Enter 'help' to see what moves can be enabled. (It's a lot more than the traditional three.)"
+                          "\n> ")
+    if enabled_moves == "!help":
+        info()
+        return
     if enabled_moves:
         # If the user entered any moves, they will be passed as an argument
         # to get_moves(), and the output of that function will be passed
@@ -145,8 +136,9 @@ def game_initialization():
         game_control_loop(get_moves("rock,paper,scissors".split(",")))
 
 
-# Calls game_initialization(). Everything starts here.
-game_initialization()
+# Calls game_initialization()
+while True:
+    game_initialization()
 
 
 # END OF PROGRAM
